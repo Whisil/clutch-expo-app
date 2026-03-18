@@ -39,6 +39,7 @@ const Input = ({
           backgroundColor: colors.white.default,
           borderRadius: 8,
           borderWidth: 1,
+          borderColor: 'rgba(0, 0, 0, 0.25)',
           flexDirection: 'row',
           paddingHorizontal: 16,
           paddingVertical: 12,
