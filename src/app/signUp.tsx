@@ -5,7 +5,7 @@ import { RedirectIfAuthed } from '@/src/components/auth/AuthGate'
 export default function SignUpScreen() {
   return (
     <RedirectIfAuthed to="/(tabs)">
-      <Stack.Screen options={{ headerShown: false }} />
+      <Stack.Screen />
       <SignUpContent />
     </RedirectIfAuthed>
   )

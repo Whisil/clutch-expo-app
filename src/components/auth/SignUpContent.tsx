@@ -1,7 +1,11 @@
+import DatePickerModal from '@/src/components/shared/forms/DatePickerModal'
+import Input from '@/src/components/shared/forms/Input'
+import Heading from '@/src/components/shared/typography/Heading'
+import Text from '@/src/components/shared/typography/Text'
+import { colors } from '@/src/constants/colors'
 import { zodResolver } from '@hookform/resolvers/zod'
 import DateTimePicker, {
   type DateTimePickerChangeEvent,
-  type DateTimePickerEvent,
 } from '@react-native-community/datetimepicker'
 import { useRouter } from 'expo-router'
 import { useMemo, useState } from 'react'
@@ -14,12 +18,6 @@ import {
   View,
 } from 'react-native'
 import { z } from 'zod'
-
-import DatePickerModal from '@/src/components/shared/forms/DatePickerModal'
-import Input from '@/src/components/shared/forms/Input'
-import Heading from '@/src/components/shared/typography/Heading'
-import Text from '@/src/components/shared/typography/Text'
-import { colors } from '@/src/constants/colors'
 import Button from '../shared/Button'
 import ModeToggle from './ModeToggle'
 import { signInWithEmailPassword, signUpWithEmailPassword } from './authActions'
