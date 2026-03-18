@@ -20,9 +20,9 @@ import Input from '@/src/components/shared/forms/Input'
 import Heading from '@/src/components/shared/typography/Heading'
 import Text from '@/src/components/shared/typography/Text'
 import { colors } from '@/src/constants/colors'
-import { supabase } from '@/src/utils/supabase'
 import Button from '../shared/Button'
 import ModeToggle from './ModeToggle'
+import { signInWithEmailPassword, signUpWithEmailPassword } from './authActions'
 
 export type AuthMode = 'signUp' | 'signIn'
 
@@ -93,16 +93,21 @@ export default function SignUpContent() {
 
   const { control, handleSubmit, formState, reset } = form
 
+  const resetForMode = (next: AuthMode, email?: string) => {
+    reset(
+      next === 'signUp'
+        ? { fullName: '', email: '', password: '', birthDate: '' }
+        : { email: email ?? '', password: '' },
+    )
+  }
+
   const onSubmit = handleSubmit(async (values) => {
     setBanner(null)
     setLoading(true)
     try {
       if (mode === 'signIn') {
         const v = values as SignInValues
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: v.email,
-          password: v.password,
-        })
+        const { data, error } = await signInWithEmailPassword(v)
         if (error) throw error
         if (data.session) {
           router.replace('/(tabs)')
@@ -111,15 +116,11 @@ export default function SignUpContent() {
       }
 
       const v = values as SignUpValues
-      const { data, error } = await supabase.auth.signUp({
+      const { data, error } = await signUpWithEmailPassword({
+        fullName: v.fullName,
         email: v.email,
         password: v.password,
-        options: {
-          data: {
-            full_name: v.fullName,
-            date_of_birth: v.birthDate?.trim() ? v.birthDate.trim() : null,
-          },
-        },
+        birthDate: v.birthDate,
       })
       if (error) throw error
 
@@ -129,7 +130,7 @@ export default function SignUpContent() {
       }
 
       setMode('signIn')
-      reset({ email: v.email, password: '' })
+      resetForMode('signIn', v.email)
     } catch (e: any) {
       setBanner({
         kind: 'error',
@@ -167,11 +168,7 @@ export default function SignUpContent() {
             if (next === mode) return
             setBanner(null)
             setMode(next)
-            reset(
-              next === 'signUp'
-                ? { fullName: '', email: '', password: '', birthDate: '' }
-                : { email: '', password: '' },
-            )
+            resetForMode(next)
           }}
         />
 

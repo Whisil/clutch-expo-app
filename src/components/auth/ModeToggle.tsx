@@ -1,7 +1,7 @@
 import { colors } from '@/src/constants/colors'
 import { Pressable, StyleSheet, View } from 'react-native'
 import Text from '../shared/typography/Text'
-import { AuthMode } from './SignUpContent'
+import type { AuthMode } from './SignUpContent'
 
 function ModeToggle({
   mode,

@@ -21,7 +21,6 @@ export default function RootLayout() {
 
   return (
     <Stack>
-      <Stack.Screen name="index" />
       <Stack.Screen name="signUp" />
       <Stack.Screen name="(tabs)" />
     </Stack>
