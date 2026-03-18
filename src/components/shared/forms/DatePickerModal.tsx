@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import Text from '@/src/components/shared/typography/Text'
 import { colors } from '@/src/constants/colors'
 import DateTimePicker, {
@@ -9,21 +10,27 @@ export default function DatePickerModal({
   visible,
   value,
   maximumDate,
-  onChange,
+  onConfirm,
   onClose,
   onClear,
 }: {
   visible: boolean
   value: Date
   maximumDate?: Date
-  onChange: (date: Date) => void
+  onConfirm: (date: Date) => void
   onClose: () => void
   onClear?: () => void
 }) {
   if (!visible) return null
 
+  const [pendingDate, setPendingDate] = useState<Date>(value)
+
+  useEffect(() => {
+    if (visible) setPendingDate(value)
+  }, [visible, value])
+
   const handleValueChange = (_event: DateTimePickerChangeEvent, date: Date) => {
-    onChange(date)
+    setPendingDate(date)
   }
 
   return (
@@ -51,7 +58,10 @@ export default function DatePickerModal({
 
             <Pressable
               accessibilityRole="button"
-              onPress={onClose}
+              onPress={() => {
+                onConfirm(pendingDate)
+                onClose()
+              }}
               style={styles.actionBtn}
             >
               <Text weight="semiBold" style={styles.actionText}>
@@ -61,7 +71,7 @@ export default function DatePickerModal({
           </View>
 
           <DateTimePicker
-            value={value}
+            value={pendingDate}
             mode="date"
             display="spinner"
             onValueChange={handleValueChange}
