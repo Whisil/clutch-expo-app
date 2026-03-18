@@ -1,4 +1,22 @@
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View } from 'react-native'
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 24,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  subtitle: {
+    color: '#666',
+    fontSize: 16,
+  },
+})
 
 export default function ProfileScreen() {
   return (
@@ -8,21 +26,3 @@ export default function ProfileScreen() {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "center",
-    padding: 24,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-    marginBottom: 8,
-  },
-  subtitle: {
-    color: "#666",
-    fontSize: 16,
-  },
-})
