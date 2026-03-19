@@ -1,28 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native'
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 24,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  subtitle: {
-    color: '#666',
-    fontSize: 16,
-  },
-})
+import HomePageContent from '@/src/components/home/HomePageContent'
 
 export default function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Blank home screen</Text>
-    </View>
-  )
+  return <HomePageContent />
 }

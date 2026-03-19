@@ -27,9 +27,7 @@ export default function TabsLayout() {
               <FontAwesome5
                 name="home"
                 size={24}
-                color={
-                  focused ? colors.green.default : 'rgba(0, 0, 0, 0.5)'
-                }
+                color={focused ? colors.green.default : 'rgba(0, 0, 0, 0.5)'}
               />
             ),
           }}
@@ -42,9 +40,7 @@ export default function TabsLayout() {
               <FontAwesome5
                 name="user-alt"
                 size={24}
-                color={
-                  focused ? colors.green.default : 'rgba(0, 0, 0, 0.5)'
-                }
+                color={focused ? colors.green.default : 'rgba(0, 0, 0, 0.5)'}
               />
             ),
           }}
