@@ -1,8 +1,12 @@
 import Text from '@/src/components/shared/typography/Text'
 import type { FeedItem } from '@/src/types/highlights'
 import { VideoView, useVideoPlayer } from 'expo-video'
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
+import HighlightVariantSwitcher, {
+  type HighlightVariant,
+} from './HighlightVariantSwitcher'
+import VideoAudioToggle from './VideoAudioToggle'
 
 type HighlightFeedItemProps = {
   item: FeedItem
@@ -17,15 +21,20 @@ const HighlightFeedItem = ({
   isActive,
   height,
 }: HighlightFeedItemProps) => {
-  const player = useVideoPlayer(
-    {
-      uri: item.videoUrl,
-    },
-    (nextPlayer) => {
-      nextPlayer.loop = true
-      nextPlayer.muted = true
-    },
-  )
+  const [selectedVariant, setSelectedVariant] =
+    useState<HighlightVariant>('clutchAutopan')
+  const [isMuted, setIsMuted] = useState(true)
+
+  const selectedVideoUrl = useMemo(() => {
+    return item.videoUrls[selectedVariant]
+  }, [item.videoUrls, selectedVariant])
+
+  const source = isActive ? { uri: selectedVideoUrl } : null
+
+  const player = useVideoPlayer(source, (nextPlayer) => {
+    nextPlayer.loop = true
+    nextPlayer.muted = isMuted
+  })
 
   useEffect(() => {
     if (isActive) {
@@ -36,10 +45,22 @@ const HighlightFeedItem = ({
     player.pause()
   }, [isActive, player])
 
+  useEffect(() => {
+    player.muted = isMuted
+  }, [isMuted, player])
+
   return (
     <View style={[styles.container, { height }]}>
+      <HighlightVariantSwitcher
+        selectedVariant={selectedVariant}
+        onSelect={setSelectedVariant}
+      />
+      <VideoAudioToggle
+        isMuted={isMuted}
+        onToggle={() => setIsMuted((previous) => !previous)}
+      />
       <VideoView
-        contentFit="cover"
+        contentFit="contain"
         player={player}
         style={styles.video}
         nativeControls={false}
@@ -61,6 +82,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   video: {
+    backgroundColor: '#000000',
     flex: 1,
     width: '100%',
   },

@@ -32,6 +32,6 @@ export type HighlightsFeedResponse = {
 
 export type FeedItem = {
   id: number
-  videoUrl: string
-  thumbnailUrl: string
+  videoUrls: HighlightVideoMap
+  thumbnailUrls: HighlightThumbnailMap
 }

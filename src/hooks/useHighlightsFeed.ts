@@ -14,17 +14,17 @@ type HighlightsState = {
   error: string | null
 }
 
-function toFeedItems(entries: HighlightEntry[]): FeedItem[] {
+const toFeedItems = (entries: HighlightEntry[]): FeedItem[] => {
   return entries.map((entry) => {
     return {
       id: entry.id,
-      videoUrl: entry.videoUrls.clutchAutopan,
-      thumbnailUrl: entry.thumbnailUrls.clutchAutopan,
+      videoUrls: entry.videoUrls,
+      thumbnailUrls: entry.thumbnailUrls,
     }
   })
 }
 
-export function useHighlightsFeed() {
+export const useHighlightsFeed = () => {
   const [state, setState] = useState<HighlightsState>({
     items: [],
     pagination: null,

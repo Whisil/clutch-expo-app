@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   screen: {
     backgroundColor: colors.green.light,
     flex: 1,
-    paddingHorizontal: 14,
+    paddingHorizontal: 12,
     paddingBottom: 90,
   },
   card: {
