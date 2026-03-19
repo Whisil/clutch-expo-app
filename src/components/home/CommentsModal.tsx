@@ -1,6 +1,7 @@
 import { colors } from '@/src/constants/colors'
 import type { CommentData } from '@/src/hooks/useHighlightComments'
 import { useSession } from '@/src/hooks/useSession'
+import { timeAgo } from '@/src/utils/dates'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { useState } from 'react'
 import {
@@ -25,17 +26,6 @@ type CommentsModalProps = {
   loading: boolean
   onAddComment: (content: string) => Promise<void>
   onDeleteComment: (commentId: string) => Promise<void>
-}
-
-const timeAgo = (dateStr: string) => {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const seconds = Math.floor(diff / 1000)
-  if (seconds < 60) return `${seconds}s`
-  const minutes = Math.floor(seconds / 60)
-  if (minutes < 60) return `${minutes}m`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h`
-  return `${Math.floor(hours / 24)}d`
 }
 
 const CommentsModal = ({

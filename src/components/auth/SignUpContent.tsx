@@ -3,6 +3,7 @@ import Input from '@/src/components/shared/forms/Input'
 import Heading from '@/src/components/shared/typography/Heading'
 import Text from '@/src/components/shared/typography/Text'
 import { colors } from '@/src/constants/colors'
+import { formatIsoDateForDisplay } from '@/src/utils/dates'
 import { zodResolver } from '@hookform/resolvers/zod'
 import DateTimePicker, {
   type DateTimePickerChangeEvent,
@@ -56,13 +57,6 @@ const signUpSchema = z.object({
 
 type SignInValues = z.infer<typeof signInSchema>
 type SignUpValues = z.infer<typeof signUpSchema>
-
-const formatIsoDateForDisplay = (iso?: string) => {
-  if (!iso?.trim()) return ''
-  const d = new Date(`${iso}T00:00:00Z`)
-  if (Number.isNaN(d.getTime())) return ''
-  return iso
-}
 
 const SignUpContent = () => {
   const router = useRouter()

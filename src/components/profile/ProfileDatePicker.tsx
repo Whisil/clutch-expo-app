@@ -1,6 +1,7 @@
 import DatePickerModal from '@/src/components/shared/forms/DatePickerModal'
 import Text from '@/src/components/shared/typography/Text'
 import { colors } from '@/src/constants/colors'
+import { formatIsoDateForDisplay } from '@/src/utils/dates'
 import DateTimePicker, {
   type DateTimePickerChangeEvent,
 } from '@react-native-community/datetimepicker'
@@ -11,13 +12,6 @@ type ProfileDatePickerProps = {
   value: string
   onChange: (iso: string) => void
   disabled?: boolean
-}
-
-const formatIsoDateForDisplay = (iso?: string) => {
-  if (!iso?.trim()) return ''
-  const d = new Date(`${iso}T00:00:00Z`)
-  if (Number.isNaN(d.getTime())) return ''
-  return iso
 }
 
 const ProfileDatePicker = ({
