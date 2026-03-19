@@ -1,5 +1,7 @@
 # Clutch Test - Expo Application
 
+# This is an iOS focused app
+
 ## 🚀 Initial Setup
 
 1. **Install dependencies:**
