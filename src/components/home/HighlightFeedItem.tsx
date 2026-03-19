@@ -1,13 +1,16 @@
 import Text from '@/src/components/shared/typography/Text'
+import { useHighlightComments } from '@/src/hooks/useHighlightComments'
 import { useHighlightLike } from '@/src/hooks/useHighlightLike'
 import type { FeedItem } from '@/src/types/highlights'
 import { VideoView, useVideoPlayer } from 'expo-video'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
+import CommentsModal from './CommentsModal'
 import HighlightVariantSwitcher, {
   type HighlightVariant,
 } from './HighlightVariantSwitcher'
 import VideoAudioToggle from './VideoAudioToggle'
+import VideoCommentToggle from './VideoCommentToggle'
 import VideoFullscreenToggle from './VideoFullscreenToggle'
 import VideoLikeToggle from './VideoLikeToggle'
 import VideoPlayPauseToggle from './VideoPlayPauseToggle'
@@ -33,9 +36,19 @@ const HighlightFeedItem = ({
   const [isMuted, setIsMuted] = useState(true)
   const [isPaused, setIsPaused] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isCommentsVisible, setIsCommentsVisible] = useState(false)
   const videoRef = useRef<VideoView>(null)
   const wasPlayingBeforeFullscreenRef = useRef(false)
+
   const { hasLiked, likeCount, toggleLike } = useHighlightLike(item.id)
+
+  const {
+    comments,
+    commentCount,
+    loading: commentsLoading,
+    addComment,
+    deleteComment,
+  } = useHighlightComments(item.id)
 
   const selectedVideoUrl = useMemo(() => {
     return item.videoUrls[selectedVariant]
@@ -119,12 +132,25 @@ const HighlightFeedItem = ({
       />
 
       {!isFullscreen && (
-        <VideoLikeToggle
-          hasLiked={hasLiked}
-          likeCount={likeCount}
-          onToggle={toggleLike}
-          style={styles.likeToggle}
-        />
+        <>
+          <VideoLikeToggle
+            hasLiked={hasLiked}
+            likeCount={likeCount}
+            onToggle={toggleLike}
+            style={styles.likeToggle}
+          />
+          <VideoCommentToggle
+            commentCount={commentCount}
+            onToggle={() => {
+              setIsCommentsVisible(true)
+              try {
+                player.pause()
+                setIsPaused(true)
+              } catch (_) {}
+            }}
+            style={styles.commentToggle}
+          />
+        </>
       )}
 
       <VideoAudioToggle
@@ -169,6 +195,15 @@ const HighlightFeedItem = ({
           Highlight #{index + 1}
         </Text>
       </View>
+
+      <CommentsModal
+        visible={isCommentsVisible}
+        onClose={() => setIsCommentsVisible(false)}
+        comments={comments}
+        loading={commentsLoading}
+        onAddComment={addComment}
+        onDeleteComment={deleteComment}
+      />
     </View>
   )
 }
@@ -200,6 +235,12 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   likeToggle: {
+    position: 'absolute',
+    right: 14,
+    bottom: 140,
+    zIndex: 3,
+  },
+  commentToggle: {
     position: 'absolute',
     right: 14,
     bottom: 80,
