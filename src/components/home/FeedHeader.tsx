@@ -7,9 +7,7 @@ const FeedHeader = () => {
   return (
     <View style={styles.container}>
       <View style={styles.textGroup}>
-        <Heading weight="black">
-          Highlights
-        </Heading>
+        <Heading weight="black">Highlights</Heading>
         <Text style={styles.subtitle}>Swipe up to browse clips</Text>
       </View>
     </View>
@@ -21,7 +19,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 12,
     paddingBottom: 14,
   },
   textGroup: {
