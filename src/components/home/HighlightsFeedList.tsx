@@ -1,7 +1,7 @@
 import Text from '@/src/components/shared/typography/Text'
 import { colors } from '@/src/constants/colors'
 import type { FeedItem } from '@/src/types/highlights'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
   ActivityIndicator,
   FlatList,
@@ -16,13 +16,17 @@ import HighlightFeedItem from './HighlightFeedItem'
 const defaultFeedHeight = 520
 const minFeedHeight = 240
 const itemBottomGap = 14
+const prefetchDistance = 1
 
 type HighlightsFeedListProps = {
   items: FeedItem[]
   isLoading: boolean
+  isLoadingMore: boolean
+  hasNextPage: boolean
   isRefreshing: boolean
   error: string | null
   onRefresh: () => void
+  onLoadMore: () => void
 }
 
 const FeedEmptyState = ({ isLoading }: { isLoading: boolean }) => {
@@ -44,9 +48,12 @@ const FeedEmptyState = ({ isLoading }: { isLoading: boolean }) => {
 const HighlightsFeedList = ({
   items,
   isLoading,
+  isLoadingMore,
+  hasNextPage,
   isRefreshing,
   error,
   onRefresh,
+  onLoadMore,
 }: HighlightsFeedListProps) => {
   const [feedHeight, setFeedHeight] = useState(defaultFeedHeight)
   const [activeItemId, setActiveItemId] = useState<number | null>(null)
@@ -57,13 +64,24 @@ const HighlightsFeedList = ({
     }
   }, [])
 
-  const onViewableItemsChanged = useRef(
+  const onViewableItemsChanged = useCallback(
     ({ viewableItems }: { viewableItems: ViewToken<FeedItem>[] }) => {
       const [nextVisible] = viewableItems
       if (nextVisible?.item?.id) {
         setActiveItemId(nextVisible.item.id)
       }
+
+      const currentIndex = nextVisible?.index
+      if (
+        typeof currentIndex === 'number' &&
+        hasNextPage &&
+        !isLoadingMore &&
+        currentIndex >= items.length - (prefetchDistance + 1)
+      ) {
+        onLoadMore()
+      }
     },
+    [hasNextPage, isLoadingMore, items.length, onLoadMore],
   )
 
   const handleLayout = useCallback((event: LayoutChangeEvent) => {
@@ -114,8 +132,15 @@ const HighlightsFeedList = ({
         snapToAlignment="start"
         snapToInterval={feedHeight}
         viewabilityConfig={viewabilityConfig}
-        onViewableItemsChanged={onViewableItemsChanged.current}
+        onViewableItemsChanged={onViewableItemsChanged}
         ListEmptyComponent={<FeedEmptyState isLoading={isLoading} />}
+        ListFooterComponent={
+          isLoadingMore ? (
+            <View style={styles.loadingMoreWrap}>
+              <ActivityIndicator color={colors.green.default} size="small" />
+            </View>
+          ) : null
+        }
       />
     </View>
   )
@@ -142,6 +167,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 260,
+  },
+  loadingMoreWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
   },
 })
 

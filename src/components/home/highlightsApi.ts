@@ -131,10 +131,18 @@ function parseResponse(value: unknown): HighlightsFeedResponse {
   }
 }
 
-export async function fetchHighlights(
-  signal?: AbortSignal,
-): Promise<HighlightsFeedResponse> {
-  const response = await fetch(demosEndpoint, {
+type FetchHighlightsParams = {
+  page?: number
+  signal?: AbortSignal
+}
+
+export async function fetchHighlights({
+  page = 1,
+  signal,
+}: FetchHighlightsParams = {}): Promise<HighlightsFeedResponse> {
+  const endpoint = `${demosEndpoint}?page=${page}`
+
+  const response = await fetch(endpoint, {
     method: 'GET',
     signal: signal,
     headers: {

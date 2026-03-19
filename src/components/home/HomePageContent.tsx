@@ -5,21 +5,34 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import FeedHeader from './FeedHeader'
 import HighlightsFeedList from './HighlightsFeedList'
 
+const topInsetPadding = 12
+
 const HomePageContent = () => {
   const insets = useSafeAreaInsets()
-  const { items, pagination, isLoading, isRefreshing, error, refresh } =
-    useHighlightsFeed()
+  const {
+    items,
+    isLoading,
+    isLoadingMore,
+    isRefreshing,
+    hasNextPage,
+    error,
+    refresh,
+    loadMore,
+  } = useHighlightsFeed()
 
   return (
-    <View style={[styles.screen, { padding: insets.top + 12 }]}>
+    <View style={[styles.screen, { paddingTop: insets.top + topInsetPadding }]}>
       <View style={styles.card}>
         <FeedHeader />
         <HighlightsFeedList
           items={items}
           isLoading={isLoading}
+          isLoadingMore={isLoadingMore}
+          hasNextPage={hasNextPage}
           isRefreshing={isRefreshing}
           error={error}
           onRefresh={refresh}
+          onLoadMore={loadMore}
         />
       </View>
     </View>
@@ -30,7 +43,7 @@ const styles = StyleSheet.create({
   screen: {
     backgroundColor: colors.green.light,
     flex: 1,
-    paddingHorizontal: 12,
+    paddingHorizontal: topInsetPadding,
     paddingBottom: 90,
   },
   card: {
