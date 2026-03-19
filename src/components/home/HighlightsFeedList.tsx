@@ -20,6 +20,7 @@ const prefetchDistance = 1
 
 type HighlightsFeedListProps = {
   items: FeedItem[]
+  isScreenFocused: boolean
   isLoading: boolean
   isLoadingMore: boolean
   hasNextPage: boolean
@@ -47,6 +48,7 @@ const FeedEmptyState = ({ isLoading }: { isLoading: boolean }) => {
 
 const HighlightsFeedList = ({
   items,
+  isScreenFocused,
   isLoading,
   isLoadingMore,
   hasNextPage,
@@ -91,8 +93,11 @@ const HighlightsFeedList = ({
 
   const renderItem = useCallback(
     ({ item, index }: { item: FeedItem; index: number }) => {
-      const shouldPlay =
-        activeItemId === null ? index === 0 : activeItemId === item.id
+      const shouldPlay = isScreenFocused
+        ? activeItemId === null
+          ? index === 0
+          : activeItemId === item.id
+        : false
 
       return (
         <HighlightFeedItem
@@ -103,7 +108,7 @@ const HighlightsFeedList = ({
         />
       )
     },
-    [activeItemId, feedHeight],
+    [activeItemId, feedHeight, isScreenFocused],
   )
 
   return (
