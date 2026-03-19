@@ -6,12 +6,14 @@ export type ProfileData = {
   full_name: string | null
   date_of_birth: string | null
   address: string | null
+  avatar_src: string | null
 }
 
 export type UpdateProfileParams = {
   full_name: string | null
   date_of_birth: string | null
   address: string | null
+  avatar_src: string | null
 }
 
 export function useProfile() {
@@ -33,7 +35,7 @@ export function useProfile() {
 
     supabase
       .from('profiles')
-      .select('full_name, date_of_birth, address')
+      .select('full_name, date_of_birth, address, avatar_src')
       .eq('id', userId)
       .single()
       .then(({ data, error }) => {
@@ -43,6 +45,7 @@ export function useProfile() {
             full_name: data.full_name ?? null,
             date_of_birth: data.date_of_birth ?? null,
             address: data.address ?? null,
+            avatar_src: data.avatar_src ?? null,
           })
         }
         setLoading(false)
@@ -62,6 +65,7 @@ export function useProfile() {
         full_name: params.full_name,
         date_of_birth: params.date_of_birth,
         address: params.address,
+        avatar_src: params.avatar_src,
       })
       .eq('id', userId)
 
@@ -71,8 +75,33 @@ export function useProfile() {
       full_name: params.full_name,
       date_of_birth: params.date_of_birth,
       address: params.address,
+      avatar_src: params.avatar_src,
     })
   }
 
-  return { profile, loading, updateProfile }
+  const uploadAvatar = async (localUri: string): Promise<string> => {
+    if (!userId) throw new Error('Not authenticated')
+
+    const fileExt = localUri.split('.').pop() || 'jpeg'
+    const fileName = `${userId}/avatar-${Date.now()}.${fileExt}`
+    const filePath = `${fileName}`
+
+    const formData = new FormData()
+    formData.append('file', {
+      uri: localUri,
+      name: fileName,
+      type: `image/${fileExt}`,
+    } as any)
+
+    const { error } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, formData)
+
+    if (error) throw error
+
+    const { data } = supabase.storage.from('avatars').getPublicUrl(filePath)
+    return data.publicUrl
+  }
+
+  return { profile, loading, updateProfile, uploadAvatar }
 }

@@ -3,11 +3,11 @@ import Text from '@/src/components/shared/typography/Text'
 import { colors } from '@/src/constants/colors'
 import { useProfile } from '@/src/hooks/useProfile'
 import { zodResolver } from '@hookform/resolvers/zod'
+import * as ImagePicker from 'expo-image-picker'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import {
   ActivityIndicator,
-  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { z } from 'zod'
 import Button from '../shared/Button'
 import Heading from '../shared/typography/Heading'
+import ProfileAvatar from './ProfileAvatar'
 import ProfileDatePicker from './ProfileDatePicker'
 import ProfileField from './ProfileField'
 
@@ -39,25 +40,29 @@ const profileSchema = z.object({
       { message: 'Use YYYY-MM-DD' },
     ),
   address: z.string().trim().optional(),
+  avatar_src: z.string().optional().nullable(),
 })
 
 type ProfileValues = z.infer<typeof profileSchema>
 
 const ProfilePageContent = () => {
   const insets = useSafeAreaInsets()
-  const { profile, loading: profileLoading, updateProfile } = useProfile()
+  const { profile, loading: profileLoading, updateProfile, uploadAvatar } = useProfile()
 
   const [saving, setSaving] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const [banner, setBanner] = useState<{
     kind: 'error' | 'success'
     text: string
   } | null>(null)
 
-  const { control, handleSubmit, formState, reset } = useForm<ProfileValues>({
+  const { control, handleSubmit, formState, reset, setValue, watch } = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: { full_name: '', date_of_birth: '', address: '' },
+    defaultValues: { full_name: '', date_of_birth: '', address: '', avatar_src: null },
     mode: 'onSubmit',
   })
+
+  const formAvatarSrc = watch('avatar_src')
 
   useEffect(() => {
     if (profile) {
@@ -65,9 +70,38 @@ const ProfilePageContent = () => {
         full_name: profile.full_name ?? '',
         date_of_birth: profile.date_of_birth ?? '',
         address: profile.address ?? '',
+        avatar_src: profile.avatar_src,
       })
     }
   }, [profile, reset])
+
+  const handleAvatarPress = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      })
+
+      if (!result.canceled && result.assets[0]) {
+        setUploadingAvatar(true)
+        setBanner(null)
+        
+        const publicUrl = await uploadAvatar(result.assets[0].uri)
+        
+        setValue('avatar_src', publicUrl, { shouldDirty: true })
+        setBanner({ kind: 'success', text: 'Avatar uploaded. Press Save to apply.' })
+      }
+    } catch (e: any) {
+      setBanner({
+        kind: 'error',
+        text: typeof e?.message === 'string' ? e.message : 'Failed to upload avatar',
+      })
+    } finally {
+      setUploadingAvatar(false)
+    }
+  }
 
   const onSubmit = handleSubmit(async (values) => {
     setBanner(null)
@@ -77,6 +111,7 @@ const ProfilePageContent = () => {
         full_name: values.full_name || null,
         date_of_birth: values.date_of_birth?.trim() || null,
         address: values.address?.trim() || null,
+        avatar_src: values.avatar_src || null,
       })
       reset(values)
       setBanner({ kind: 'success', text: 'Profile saved successfully' })
@@ -107,9 +142,10 @@ const ProfilePageContent = () => {
           </Heading>
         </View>
 
-        <Image
-          source={require('@/assets/images/avatar-placeholder.jpg')}
-          style={styles.avatar}
+        <ProfileAvatar
+          avatarUrl={formAvatarSrc}
+          uploading={uploadingAvatar}
+          onPress={handleAvatarPress}
         />
 
         {profileLoading ? (
@@ -214,14 +250,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: topInsetPadding,
     paddingBottom: 90,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 3,
-    borderColor: colors.white.default,
-    alignSelf: 'center',
   },
   scrollContent: {
     paddingBottom: 20,
