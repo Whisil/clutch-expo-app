@@ -1,6 +1,6 @@
-import { Redirect } from 'expo-router'
-
 import { useSession } from '@/src/hooks/useSession'
+import { Redirect } from 'expo-router'
+import React from 'react'
 
 export function RedirectIfAuthed({
   to = '/(tabs)',
@@ -27,4 +27,3 @@ export function RequireAuth({
   if (!session) return <Redirect href={redirectTo} />
   return <>{children}</>
 }
-

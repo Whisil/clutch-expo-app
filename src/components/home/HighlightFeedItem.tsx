@@ -146,7 +146,9 @@ const HighlightFeedItem = ({
               try {
                 player.pause()
                 setIsPaused(true)
-              } catch (_) {}
+              } catch {
+                /* ignore */
+              }
             }}
             style={styles.commentToggle}
           />

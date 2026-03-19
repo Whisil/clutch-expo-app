@@ -41,7 +41,9 @@ export default function ProfileDatePicker({
         onPress={() => setIsOpen(true)}
         style={[styles.dateButton, disabled && styles.dateButtonDisabled]}
       >
-        <Text style={[styles.dateButtonText, !displayed && styles.datePlaceholder]}>
+        <Text
+          style={[styles.dateButtonText, !displayed && styles.datePlaceholder]}
+        >
           {displayed || 'Select date'}
         </Text>
       </Pressable>

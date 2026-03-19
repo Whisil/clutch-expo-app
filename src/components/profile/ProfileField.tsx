@@ -9,7 +9,11 @@ type ProfileFieldProps = {
   children: ReactNode
 }
 
-export default function ProfileField({ label, error, children }: ProfileFieldProps) {
+export default function ProfileField({
+  label,
+  error,
+  children,
+}: ProfileFieldProps) {
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>

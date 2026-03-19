@@ -1,7 +1,7 @@
 import { colors } from '@/src/constants/colors'
 import { useHighlightsFeed } from '@/src/hooks/useHighlightsFeed'
-import { StyleSheet, View } from 'react-native'
 import { useIsFocused } from '@react-navigation/native'
+import { StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import FeedHeader from './FeedHeader'
 import HighlightsFeedList from './HighlightsFeedList'
