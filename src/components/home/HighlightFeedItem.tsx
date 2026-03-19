@@ -1,13 +1,15 @@
+import Text from '@/src/components/shared/typography/Text'
+import { useHighlightLike } from '@/src/hooks/useHighlightLike'
+import type { FeedItem } from '@/src/types/highlights'
 import { VideoView, useVideoPlayer } from 'expo-video'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import Text from '@/src/components/shared/typography/Text'
-import type { FeedItem } from '@/src/types/highlights'
 import HighlightVariantSwitcher, {
   type HighlightVariant,
 } from './HighlightVariantSwitcher'
 import VideoAudioToggle from './VideoAudioToggle'
 import VideoFullscreenToggle from './VideoFullscreenToggle'
+import VideoLikeToggle from './VideoLikeToggle'
 import VideoPlayPauseToggle from './VideoPlayPauseToggle'
 
 type HighlightFeedItemProps = {
@@ -19,34 +21,6 @@ type HighlightFeedItemProps = {
 
 const fullscreenSyncIntervalMs = 200
 const fullscreenExitResumeDelayMs = 80
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#000',
-    borderRadius: 20,
-    marginBottom: 14,
-    overflow: 'hidden',
-  },
-  video: {
-    backgroundColor: '#000000',
-    flex: 1,
-    width: '100%',
-  },
-  meta: {
-    backgroundColor: 'rgba(0, 0, 0, 0.45)',
-    borderTopColor: 'rgba(255, 255, 255, 0.15)',
-    borderTopWidth: 1,
-    bottom: 0,
-    left: 0,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    position: 'absolute',
-    right: 0,
-  },
-  metaText: {
-    color: '#FFFFFF',
-  },
-})
 
 const HighlightFeedItem = ({
   item,
@@ -61,6 +35,7 @@ const HighlightFeedItem = ({
   const [isFullscreen, setIsFullscreen] = useState(false)
   const videoRef = useRef<VideoView>(null)
   const wasPlayingBeforeFullscreenRef = useRef(false)
+  const { hasLiked, likeCount, toggleLike } = useHighlightLike(item.id)
 
   const selectedVideoUrl = useMemo(() => {
     return item.videoUrls[selectedVariant]
@@ -142,6 +117,16 @@ const HighlightFeedItem = ({
         selectedVariant={selectedVariant}
         onSelect={setSelectedVariant}
       />
+
+      {!isFullscreen && (
+        <VideoLikeToggle
+          hasLiked={hasLiked}
+          likeCount={likeCount}
+          onToggle={toggleLike}
+          style={styles.likeToggle}
+        />
+      )}
+
       <VideoAudioToggle
         isMuted={isMuted}
         onToggle={() => setIsMuted((previous) => !previous)}
@@ -187,5 +172,39 @@ const HighlightFeedItem = ({
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#000',
+    borderRadius: 20,
+    marginBottom: 14,
+    overflow: 'hidden',
+  },
+  video: {
+    backgroundColor: '#000000',
+    flex: 1,
+    width: '100%',
+  },
+  meta: {
+    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+    borderTopColor: 'rgba(255, 255, 255, 0.15)',
+    borderTopWidth: 1,
+    bottom: 0,
+    left: 0,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    position: 'absolute',
+    right: 0,
+  },
+  metaText: {
+    color: '#FFFFFF',
+  },
+  likeToggle: {
+    position: 'absolute',
+    right: 14,
+    bottom: 80,
+    zIndex: 3,
+  },
+})
 
 export default HighlightFeedItem
