@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
 import { supabase } from '@/src/utils/supabase'
+import { useEffect, useState } from 'react'
 import { useSession } from './useSession'
 
 export type ProfileData = {
@@ -58,12 +58,12 @@ export function useProfile() {
 
     const { error } = await supabase
       .from('profiles')
-      .upsert({
-        id: userId,
+      .update({
         full_name: params.full_name,
         date_of_birth: params.date_of_birth,
         address: params.address,
       })
+      .eq('id', userId)
 
     if (error) throw error
 
