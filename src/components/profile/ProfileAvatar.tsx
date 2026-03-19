@@ -1,6 +1,7 @@
-import { FontAwesome5 } from '@expo/vector-icons'
-import { ActivityIndicator, Image, Pressable, StyleSheet, View } from 'react-native'
 import { colors } from '@/src/constants/colors'
+import { FontAwesome5 } from '@expo/vector-icons'
+import { Image } from 'expo-image'
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native'
 
 type ProfileAvatarProps = {
   avatarUrl?: string | null
@@ -16,13 +17,12 @@ export default function ProfileAvatar({
   return (
     <Pressable onPress={onPress} style={styles.container}>
       <Image
-        source={
-          avatarUrl
-            ? { uri: avatarUrl }
-            : require('@/assets/images/avatar-placeholder.jpg')
-        }
+        source={avatarUrl}
         style={styles.avatar}
-        
+        placeholder={require('@/assets/images/avatar-placeholder.jpg')}
+        contentFit="cover"
+        placeholderContentFit="cover"
+        transition={250}
       />
 
       {uploading && (
