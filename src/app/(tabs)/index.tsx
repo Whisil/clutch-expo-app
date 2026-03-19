@@ -1,5 +1,7 @@
 import HomePageContent from '@/src/components/home/HomePageContent'
 
-export default function HomeScreen() {
+const HomeScreen = () => {
   return <HomePageContent />
 }
+
+export default HomeScreen

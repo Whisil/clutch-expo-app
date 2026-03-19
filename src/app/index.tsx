@@ -1,8 +1,7 @@
+import { useSession } from '@/src/hooks/useSession'
 import { Redirect } from 'expo-router'
 
-import { useSession } from '@/src/hooks/useSession'
-
-export default function Index() {
+const Index = () => {
   const { session, initializing } = useSession()
 
   if (initializing) return null
@@ -10,3 +9,4 @@ export default function Index() {
   return <Redirect href={session ? '/(tabs)' : '/signUp'} />
 }
 
+export default Index

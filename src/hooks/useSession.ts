@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
-import type { Session } from '@supabase/supabase-js'
-
 import { supabase } from '@/src/utils/supabase'
+import type { Session } from '@supabase/supabase-js'
+import { useEffect, useState } from 'react'
 
 export function useSession() {
   const [session, setSession] = useState<Session | null>(null)
@@ -21,10 +20,12 @@ export function useSession() {
         setInitializing(false)
       })
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      if (!mounted) return
-      setSession(nextSession)
-    })
+    const { data: sub } = supabase.auth.onAuthStateChange(
+      (_event, nextSession) => {
+        if (!mounted) return
+        setSession(nextSession)
+      },
+    )
 
     return () => {
       mounted = false
@@ -34,4 +35,3 @@ export function useSession() {
 
   return { session, initializing }
 }
-

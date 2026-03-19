@@ -9,11 +9,11 @@ type ProfileAvatarProps = {
   onPress: () => void
 }
 
-export default function ProfileAvatar({
+const ProfileAvatar = ({
   avatarUrl,
   uploading,
   onPress,
-}: ProfileAvatarProps) {
+}: ProfileAvatarProps) => {
   return (
     <Pressable onPress={onPress} style={styles.container}>
       <Image
@@ -78,3 +78,5 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
 })
+
+export default ProfileAvatar

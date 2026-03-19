@@ -29,4 +29,3 @@ export async function signUpWithEmailPassword(params: {
 export async function signOut() {
   return supabase.auth.signOut()
 }
-

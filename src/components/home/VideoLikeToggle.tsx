@@ -1,6 +1,11 @@
-import { FontAwesome5 } from '@expo/vector-icons'
-import { Pressable, StyleSheet, type StyleProp, type ViewStyle } from 'react-native'
 import { colors } from '@/src/constants/colors'
+import { FontAwesome5 } from '@expo/vector-icons'
+import {
+  Pressable,
+  StyleSheet,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native'
 import Text from '../shared/typography/Text'
 
 type VideoLikeToggleProps = {

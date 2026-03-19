@@ -1,6 +1,7 @@
 import DatePickerModal from '@/src/components/shared/forms/DatePickerModal'
 import Text from '@/src/components/shared/typography/Text'
 import { colors } from '@/src/constants/colors'
+import { formatIsoDateForDisplay } from '@/src/utils/dates'
 import DateTimePicker, {
   type DateTimePickerChangeEvent,
 } from '@react-native-community/datetimepicker'
@@ -13,18 +14,11 @@ type ProfileDatePickerProps = {
   disabled?: boolean
 }
 
-function formatIsoDateForDisplay(iso?: string) {
-  if (!iso?.trim()) return ''
-  const d = new Date(`${iso}T00:00:00Z`)
-  if (Number.isNaN(d.getTime())) return ''
-  return iso
-}
-
-export default function ProfileDatePicker({
+const ProfileDatePicker = ({
   value,
   onChange,
   disabled,
-}: ProfileDatePickerProps) {
+}: ProfileDatePickerProps) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const displayed = formatIsoDateForDisplay(value)
@@ -41,7 +35,9 @@ export default function ProfileDatePicker({
         onPress={() => setIsOpen(true)}
         style={[styles.dateButton, disabled && styles.dateButtonDisabled]}
       >
-        <Text style={[styles.dateButtonText, !displayed && styles.datePlaceholder]}>
+        <Text
+          style={[styles.dateButtonText, !displayed && styles.datePlaceholder]}
+        >
           {displayed || 'Select date'}
         </Text>
       </Pressable>
@@ -94,3 +90,5 @@ const styles = StyleSheet.create({
     color: 'rgba(0, 0, 0, 0.5)',
   },
 })
+
+export default ProfileDatePicker
