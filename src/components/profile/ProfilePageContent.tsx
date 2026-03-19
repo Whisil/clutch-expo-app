@@ -10,12 +10,14 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   View,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { z } from 'zod'
+import { signOut } from '../auth/authActions'
 import Button from '../shared/Button'
 import Heading from '../shared/typography/Heading'
 import ProfileAvatar from './ProfileAvatar'
@@ -47,7 +49,12 @@ type ProfileValues = z.infer<typeof profileSchema>
 
 const ProfilePageContent = () => {
   const insets = useSafeAreaInsets()
-  const { profile, loading: profileLoading, updateProfile, uploadAvatar } = useProfile()
+  const {
+    profile,
+    loading: profileLoading,
+    updateProfile,
+    uploadAvatar,
+  } = useProfile()
 
   const [saving, setSaving] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
@@ -56,11 +63,17 @@ const ProfilePageContent = () => {
     text: string
   } | null>(null)
 
-  const { control, handleSubmit, formState, reset, setValue, watch } = useForm<ProfileValues>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: { full_name: '', date_of_birth: '', address: '', avatar_src: null },
-    mode: 'onSubmit',
-  })
+  const { control, handleSubmit, formState, reset, setValue, watch } =
+    useForm<ProfileValues>({
+      resolver: zodResolver(profileSchema),
+      defaultValues: {
+        full_name: '',
+        date_of_birth: '',
+        address: '',
+        avatar_src: null,
+      },
+      mode: 'onSubmit',
+    })
 
   const formAvatarSrc = watch('avatar_src')
 
@@ -87,16 +100,22 @@ const ProfilePageContent = () => {
       if (!result.canceled && result.assets[0]) {
         setUploadingAvatar(true)
         setBanner(null)
-        
+
         const publicUrl = await uploadAvatar(result.assets[0].uri)
-        
+
         setValue('avatar_src', publicUrl, { shouldDirty: true })
-        setBanner({ kind: 'success', text: 'Avatar uploaded. Press Save to apply.' })
+        setBanner({
+          kind: 'success',
+          text: 'Avatar uploaded. Press Save to apply.',
+        })
       }
     } catch (e: any) {
       setBanner({
         kind: 'error',
-        text: typeof e?.message === 'string' ? e.message : 'Failed to upload avatar',
+        text:
+          typeof e?.message === 'string'
+            ? e.message
+            : 'Failed to upload avatar',
       })
     } finally {
       setUploadingAvatar(false)
@@ -142,102 +161,114 @@ const ProfilePageContent = () => {
           </Heading>
         </View>
 
-        <ProfileAvatar
-          avatarUrl={formAvatarSrc}
-          uploading={uploadingAvatar}
-          onPress={handleAvatarPress}
-        />
-
         {profileLoading ? (
           <ActivityIndicator
             style={styles.loader}
             color={colors.green.default}
           />
         ) : (
-          <View style={styles.card}>
-            {banner && (
-              <View
-                style={[
-                  styles.banner,
-                  banner.kind === 'error'
-                    ? styles.bannerError
-                    : styles.bannerSuccess,
-                ]}
-              >
-                <Text weight="medium">{banner.text}</Text>
-              </View>
-            )}
-
-            <ProfileField
-              label="Full name"
-              error={
-                'full_name' in formState.errors
-                  ? (formState.errors.full_name?.message as string)
-                  : undefined
-              }
-            >
-              <Controller
-                control={control}
-                name="full_name"
-                render={({ field: { onChange, value } }) => (
-                  <Input
-                    value={value ?? ''}
-                    onChange={onChange}
-                    placeholder="Your full name"
-                    autoCapitalize="words"
-                    textContentType="name"
-                    editable={!saving}
-                  />
-                )}
-              />
-            </ProfileField>
-
-            <ProfileField
-              label="Date of birth (optional)"
-              error={
-                'date_of_birth' in formState.errors
-                  ? (formState.errors.date_of_birth?.message as string)
-                  : undefined
-              }
-            >
-              <Controller
-                control={control}
-                name="date_of_birth"
-                render={({ field: { onChange, value } }) => (
-                  <ProfileDatePicker
-                    value={value ?? ''}
-                    onChange={onChange}
-                    disabled={saving}
-                  />
-                )}
-              />
-            </ProfileField>
-
-            <ProfileField label="Address (optional)">
-              <Controller
-                control={control}
-                name="address"
-                render={({ field: { onChange, value } }) => (
-                  <Input
-                    value={value ?? ''}
-                    onChange={onChange}
-                    placeholder="Your address"
-                    autoCapitalize="sentences"
-                    textContentType="streetAddressLine1"
-                    editable={!saving}
-                  />
-                )}
-              />
-            </ProfileField>
-
-            <Button
-              label="Save"
-              onPress={onSubmit}
-              disabled={!formState.isDirty}
-              loading={saving}
-              styles={styles.submitBtn}
+          <>
+            <ProfileAvatar
+              avatarUrl={formAvatarSrc}
+              uploading={uploadingAvatar}
+              onPress={handleAvatarPress}
             />
-          </View>
+            <View style={styles.card}>
+              {banner && (
+                <View
+                  style={[
+                    styles.banner,
+                    banner.kind === 'error'
+                      ? styles.bannerError
+                      : styles.bannerSuccess,
+                  ]}
+                >
+                  <Text weight="medium">{banner.text}</Text>
+                </View>
+              )}
+
+              <ProfileField
+                label="Full name"
+                error={
+                  'full_name' in formState.errors
+                    ? (formState.errors.full_name?.message as string)
+                    : undefined
+                }
+              >
+                <Controller
+                  control={control}
+                  name="full_name"
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      value={value ?? ''}
+                      onChange={onChange}
+                      placeholder="Your full name"
+                      autoCapitalize="words"
+                      textContentType="name"
+                      editable={!saving}
+                    />
+                  )}
+                />
+              </ProfileField>
+
+              <ProfileField
+                label="Date of birth (optional)"
+                error={
+                  'date_of_birth' in formState.errors
+                    ? (formState.errors.date_of_birth?.message as string)
+                    : undefined
+                }
+              >
+                <Controller
+                  control={control}
+                  name="date_of_birth"
+                  render={({ field: { onChange, value } }) => (
+                    <ProfileDatePicker
+                      value={value ?? ''}
+                      onChange={onChange}
+                      disabled={saving}
+                    />
+                  )}
+                />
+              </ProfileField>
+
+              <ProfileField label="Address (optional)">
+                <Controller
+                  control={control}
+                  name="address"
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      value={value ?? ''}
+                      onChange={onChange}
+                      placeholder="Your address"
+                      autoCapitalize="sentences"
+                      textContentType="streetAddressLine1"
+                      editable={!saving}
+                    />
+                  )}
+                />
+              </ProfileField>
+
+              <Button
+                label="Save"
+                onPress={onSubmit}
+                disabled={!formState.isDirty}
+                loading={saving}
+                styles={styles.submitBtn}
+              />
+
+              <Pressable
+                style={styles.signOutBtn}
+                onPress={async () => {
+                  await signOut()
+                }}
+              >
+                <Text weight="bold" style={styles.signOutText}>
+                  Sign Out
+                </Text>
+              </Pressable>
+            </View>
+          </>
         )}
       </ScrollView>
     </KeyboardAvoidingView>
@@ -283,6 +314,14 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(43, 216, 135, 0.35)',
   },
   submitBtn: { marginTop: 4 },
+  signOutBtn: {
+    marginTop: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  signOutText: {
+    color: colors.red.default,
+  },
 })
 
 export default ProfilePageContent

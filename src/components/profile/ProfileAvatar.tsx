@@ -22,6 +22,7 @@ export default function ProfileAvatar({
             : require('@/assets/images/avatar-placeholder.jpg')
         }
         style={styles.avatar}
+        
       />
 
       {uploading && (
