@@ -9,11 +9,11 @@ type ProfileFieldProps = {
   children: ReactNode
 }
 
-export default function ProfileField({
+const ProfileField = ({
   label,
   error,
   children,
-}: ProfileFieldProps) {
+}: ProfileFieldProps) => {
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
@@ -36,3 +36,5 @@ const styles = StyleSheet.create({
     color: colors.red.default,
   },
 })
+
+export default ProfileField

@@ -1,5 +1,7 @@
 import ProfilePageContent from '@/src/components/profile/ProfilePageContent'
 
-export default function ProfileScreen() {
+const ProfileScreen = () => {
   return <ProfilePageContent />
 }
+
+export default ProfileScreen

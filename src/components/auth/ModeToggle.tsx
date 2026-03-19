@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native'
 import Text from '../shared/typography/Text'
 import type { AuthMode } from './SignUpContent'
 
-function ModeToggle({
+const ModeToggle = ({
   mode,
   onChange,
   disabled,
@@ -11,7 +11,7 @@ function ModeToggle({
   mode: AuthMode
   onChange: (next: AuthMode) => void
   disabled?: boolean
-}) {
+}) => {
   return (
     <View style={styles.segmented}>
       <Pressable

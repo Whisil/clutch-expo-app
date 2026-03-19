@@ -3,7 +3,7 @@ import { colors } from '@/src/constants/colors'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
 
-export default function TabsLayout() {
+const TabsLayout = () => {
   return (
     <RequireAuth redirectTo="/signUp">
       <Tabs
@@ -49,3 +49,5 @@ export default function TabsLayout() {
     </RequireAuth>
   )
 }
+
+export default TabsLayout

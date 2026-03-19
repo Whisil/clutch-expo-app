@@ -57,14 +57,14 @@ const signUpSchema = z.object({
 type SignInValues = z.infer<typeof signInSchema>
 type SignUpValues = z.infer<typeof signUpSchema>
 
-function formatIsoDateForDisplay(iso?: string) {
+const formatIsoDateForDisplay = (iso?: string) => {
   if (!iso?.trim()) return ''
   const d = new Date(`${iso}T00:00:00Z`)
   if (Number.isNaN(d.getTime())) return ''
   return iso
 }
 
-export default function SignUpContent() {
+const SignUpContent = () => {
   const router = useRouter()
 
   const [mode, setMode] = useState<AuthMode>('signIn')
@@ -416,3 +416,5 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white.default,
   },
 })
+
+export default SignUpContent

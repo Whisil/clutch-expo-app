@@ -13,18 +13,18 @@ type ProfileDatePickerProps = {
   disabled?: boolean
 }
 
-function formatIsoDateForDisplay(iso?: string) {
+const formatIsoDateForDisplay = (iso?: string) => {
   if (!iso?.trim()) return ''
   const d = new Date(`${iso}T00:00:00Z`)
   if (Number.isNaN(d.getTime())) return ''
   return iso
 }
 
-export default function ProfileDatePicker({
+const ProfileDatePicker = ({
   value,
   onChange,
   disabled,
-}: ProfileDatePickerProps) {
+}: ProfileDatePickerProps) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const displayed = formatIsoDateForDisplay(value)
@@ -96,3 +96,5 @@ const styles = StyleSheet.create({
     color: 'rgba(0, 0, 0, 0.5)',
   },
 })
+
+export default ProfileDatePicker

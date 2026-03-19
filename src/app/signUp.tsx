@@ -2,7 +2,7 @@ import { RedirectIfAuthed } from '@/src/components/auth/AuthGate'
 import { Stack } from 'expo-router'
 import SignUpContent from '../components/auth/SignUpContent'
 
-export default function SignUpScreen() {
+const SignUpScreen = () => {
   return (
     <RedirectIfAuthed to="/(tabs)">
       <Stack.Screen />
@@ -10,3 +10,5 @@ export default function SignUpScreen() {
     </RedirectIfAuthed>
   )
 }
+
+export default SignUpScreen

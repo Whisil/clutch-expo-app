@@ -1,7 +1,7 @@
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 
-export default function RootLayout() {
+const RootLayout = () => {
   const [loaded] = useFonts({
     'Inter-Thin': require('@/assets/fonts/inter/Inter-Thin.ttf'),
     'Inter-Regular': require('@/assets/fonts/inter/Inter-Regular.ttf'),
@@ -31,3 +31,5 @@ export default function RootLayout() {
     </Stack>
   )
 }
+
+export default RootLayout

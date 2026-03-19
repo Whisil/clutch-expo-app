@@ -6,7 +6,7 @@ import DateTimePicker, {
 import { useEffect, useState } from 'react'
 import { Modal, Pressable, StyleSheet, View } from 'react-native'
 
-export default function DatePickerModal({
+const DatePickerModal = ({
   visible,
   value,
   maximumDate,
@@ -20,7 +20,7 @@ export default function DatePickerModal({
   onConfirm: (date: Date) => void
   onClose: () => void
   onClear?: () => void
-}) {
+}) => {
   if (!visible) return null
 
   const [pendingDate, setPendingDate] = useState<Date>(value)
@@ -127,3 +127,5 @@ const styles = StyleSheet.create({
   },
   datePicker: { marginHorizontal: 'auto' },
 })
+
+export default DatePickerModal
